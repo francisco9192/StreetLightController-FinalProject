@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <limits>
 #include "StreetlightController.h"
@@ -8,16 +7,73 @@ void setManualBrightness(StreetlightController& controller);
 void setNightBrightness(StreetlightController& controller);
 void runAutomaticMode(StreetlightController& controller);
 
+float lightSensor();
+extern float simulatedLux;
+void manualOverride(bool on);
 
+void readLightLevel(StreetlightController& controller) {
+    int level;
 
-void readLightLevel() {
-    cout << "Not implemented yet.\n";
+    cout << "Enter simulated light level (0 = dark, 100 = bright): ";
+
+    if (!(cin >> level)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Please enter a whole number from 0 to 100.\n";
+        return;
+    }
+
+    if (level < 0 || level > 100) {
+        cout << "Light level must be between 0 and 100.\n";
+        return;
+    }
+
+    simulatedLux = level;
+
+    controller.getLightSensor().setLightLevel(
+        static_cast<int>(lightSensor())
+    );
+
+    controller.updateAutomaticBrightness();
+
+    cout << "Simulated light level: "
+         << controller.getLightSensor().getLightLevel()
+         << "/100\n";
+
+    cout << "Streetlight brightness: "
+         << controller.getBrightnessSensor().getBrightness()
+         << "%\n";
 }
 
-void manualOverride() {
-    cout << "Not implemented yet.\n";
-}
+void setManualOverride(StreetlightController& controller) {
+    int setting;
 
+    cout << "Enter 1 to turn the streetlight ON or 0 to turn it OFF: ";
+
+    if (!(cin >> setting)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Please enter 0 or 1.\n";
+        return;
+    }
+
+    if (setting != 0 && setting != 1) {
+        cout << "Please enter 0 or 1.\n";
+        return;
+    }
+
+    manualOverride(setting == 1);
+
+    controller.setAutomaticMode(false);
+
+    if (setting == 1) {
+        controller.getBrightnessSensor().setBrightness(100);
+    } else {
+        controller.getBrightnessSensor().setBrightness(0);
+    }
+
+    cout << "Manual mode is active. Choose option 6 to resume automatic control.\n";
+}
 
 int main() {
     StreetlightController controller;
@@ -41,10 +97,10 @@ int main() {
                 break;
             }
 
-            choice = -1;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Please enter a number from 0 to 8.\n";
+            choice = -1;
             continue;
         }
 
@@ -66,7 +122,7 @@ int main() {
                 break;
 
             case 5:
-                readLightLevel();
+                readLightLevel(controller);
                 break;
 
             case 6:
@@ -74,7 +130,7 @@ int main() {
                 break;
 
             case 7:
-                manualOverride();
+                setManualOverride(controller);
                 break;
 
             case 8:
