@@ -8,13 +8,7 @@ void setManualBrightness(StreetlightController& controller);
 void setNightBrightness(StreetlightController& controller);
 void runAutomaticMode(StreetlightController& controller);
 
-void readMotion() {
-    cout << "Not implemented yet.\n";
-}
 
-void activateMotionLight() {
-    cout << "Not implemented yet.\n";
-}
 
 void readLightLevel() {
     cout << "Not implemented yet.\n";
@@ -24,13 +18,10 @@ void manualOverride() {
     cout << "Not implemented yet.\n";
 }
 
-void displayStatus() {
-    cout << "Not implemented yet.\n";
-}
 
 int main() {
     StreetlightController controller;
-    int choice;
+    int choice = -1;
 
     do {
         cout << "\n===== SMART STREETLIGHT CONTROLLER =====\n";
@@ -50,6 +41,7 @@ int main() {
                 break;
             }
 
+            choice = -1;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Please enter a number from 0 to 8.\n";
@@ -58,11 +50,11 @@ int main() {
 
         switch (choice) {
             case 1:
-                readMotion();
+                motionSensor(controller);
                 break;
 
             case 2:
-                activateMotionLight();
+                activateMotionLight(controller);
                 break;
 
             case 3:
@@ -86,7 +78,7 @@ int main() {
                 break;
 
             case 8:
-                displayStatus();
+                displayStatus(controller);
                 break;
 
             case 0:
