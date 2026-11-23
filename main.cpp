@@ -96,6 +96,17 @@ int main() {
         }
 
     } while (choice != 0);
+class LightSensor {
+    int readValue() {
+        // Simulate reading a value from the light sensor
+        return 42; // Placeholder value
+    }
+};
+bool  lampOn       = false;
 
+void manualOverride(bool on) {
+    lampOn = on;  // replace with digitalWrite(LAMP_PIN, on ? HIGH : LOW)
+    std::cout << "Lamp " << (on ? "ON" : "OFF") << "\n";
+}
     return 0;
 }
